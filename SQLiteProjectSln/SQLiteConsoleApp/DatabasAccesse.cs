@@ -39,14 +39,17 @@ namespace SQLiteConsoleApp
             try
             {
                 command.ExecuteNonQuery();
+
+                CloseConnection();
                 return true;
             }
             catch (Exception)
             {
+
+                CloseConnection();
                 return false;
             }
 
-            CloseConnection();
         }
 
         public void InsertData(string stm)
@@ -93,9 +96,38 @@ namespace SQLiteConsoleApp
 
             CloseConnection();
         }
-        
 
-       public void OpenConnection()
+        //tableExists
+        public bool TableExists(string tableName)
+        {
+            bool exists;
+            OpenConnection();
+
+            try
+            {
+                var command = new SQLiteCommand(
+                  "SELECT CASE WHEN EXISTS((SELECT * FROM Information_schema.Tables WHERE Table_name = '" + tableName + "')) then 1 else 0 end", conn);
+
+                exists = (int)command.ExecuteScalar() == 1;
+            }
+            catch
+            {
+                try
+                {
+                    exists = true;
+                    var cmdOthers = new SQLiteCommand("select 1 from " + tableName + " where 1 = 0", conn);
+                    cmdOthers.ExecuteNonQuery();
+                }
+                catch
+                {
+                    exists = false;
+                }
+            }
+            CloseConnection();
+            return exists;
+        }
+
+        public void OpenConnection()
         {
             if(conn.State != System.Data.ConnectionState.Open)
             {
