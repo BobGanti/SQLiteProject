@@ -11,19 +11,19 @@ namespace SQLiteConsoleApp
 {
     class Context : DbContext
     {
-        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        //{
-        //    var sqliteConnectionInitializer = new SQLiteConnection(GetConnectionString("AppDb"));
-
-        //}
-        public Context()
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            var sqliteConnectionInitializer = new SQLiteConnection(GetConnectionString("AppDb"));
 
         }
+        public Context()
+        {}
+
         public Context(string name)
         {
-            GetConnectionString(name);
+            var sqliteConnectionInitializer = GetConnectionString(name);
         }
+
         public static string GetConnectionString(string name)
         {
             return ConfigurationManager.ConnectionStrings[name].ConnectionString;

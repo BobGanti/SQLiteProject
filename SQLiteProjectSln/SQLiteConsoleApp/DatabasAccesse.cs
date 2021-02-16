@@ -45,7 +45,6 @@ namespace SQLiteConsoleApp
             }
             catch (Exception)
             {
-
                 CloseConnection();
                 return false;
             }
